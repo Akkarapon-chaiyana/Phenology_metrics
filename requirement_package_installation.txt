@@ -1,0 +1,12 @@
+torch
+scikit-learn
+scikit-image
+earthengine-api
+rasterio
+lmdb
+pyshp
+shapely
+pytorch-lightning
+pytorch-lightning-bolts
+torchvision
+

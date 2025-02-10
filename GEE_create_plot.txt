@@ -1,0 +1,32 @@
+https://code.earthengine.google.com/afce550fbcf13e4d16cca41b9aff7bb8
+
+var country  = 'texas';
+
+var vectors = aoi;
+Map.addLayer(vectors, {}, 'merged data', false);
+
+// Specify a non-zero error margin here
+var tile = vectors.geometry(ee.ErrorMargin(1000, 'meters'));
+
+var mangrove_grid = tile.coveringGrid('EPSG:4326', 5000);
+mangrove_grid = ee.FeatureCollection(mangrove_grid); 
+
+Map.addLayer(mangrove_grid, {}, 'mangrove_grid', false);
+print("size grid", mangrove_grid.size());
+
+Map.addLayer(mangrove_grid, {color:'red'}, "tiles", false); 
+
+function getMangrove(feat){
+  // Ensure 'country' is defined before using it
+  return feat.centroid(1).set('country', country);
+}
+
+var centroid = mangrove_grid.map(getMangrove);
+Map.addLayer(centroid.draw('red'), {}, "centroid samples");
+
+Export.table.toAsset({
+    collection: centroid,
+    description: country + '_centroid_test',
+    assetId: "projects/tony-1122/assets/TTU/sorghum/phenology/" + country + "_centroid_test"
+});
+
